@@ -243,7 +243,10 @@ module.exports = {
                   // @remove-on-eject-begin
                   babelrc: false,
                   // @remove-on-eject-end
-                  presets: [require.resolve('babel-preset-react-app')],
+                  presets: [
+                    require.resolve('babel-preset-react-app'),
+                    '@babel/preset-stage-0',
+                  ],
                   plugins: [
                     [
                       require.resolve('babel-plugin-named-asset-import'),
