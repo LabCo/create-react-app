@@ -258,6 +258,7 @@ module.exports = {
                         },
                       },
                     ],
+                    '@babel/plugin-proposal-decorators',
                   ],
                   compact: true,
                   highlightCode: true,
