@@ -54,16 +54,16 @@ my-app
 ├── package.json
 ├── .gitignore
 ├── public
-│   └── favicon.ico
-│   └── index.html
+│   ├── favicon.ico
+│   ├── index.html
 │   └── manifest.json
 └── src
-    └── App.css
-    └── App.js
-    └── App.test.js
-    └── index.css
-    └── index.js
-    └── logo.svg
+    ├── App.css
+    ├── App.js
+    ├── App.test.js
+    ├── index.css
+    ├── index.js
+    ├── logo.svg
     └── registerServiceWorker.js
 ```
 
@@ -201,6 +201,8 @@ Here’s a few common cases where you might want to try something else:
 * If your website is **mostly static** (for example, a portfolio or a blog), consider using [Gatsby](https://www.gatsbyjs.org/) instead. Unlike Create React App, it pre-renders the website into HTML at the build time.
 
 * If you want to use **TypeScript**, consider using [create-react-app-typescript](https://github.com/wmonk/create-react-app-typescript).
+
+* If you want to use **Parcel** instead of **Webpack** as your bundler, consider using [create-react-app-parcel](https://github.com/sw-yx/create-react-app-parcel).
 
 * Finally, if you need **more customization**, check out [Neutrino](https://neutrino.js.org/) and its [React preset](https://neutrino.js.org/packages/react/).
 

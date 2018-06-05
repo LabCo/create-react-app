@@ -99,7 +99,7 @@ You can find the most recent version of this guide [here](https://github.com/fac
 - [Advanced Configuration](#advanced-configuration)
 - [Troubleshooting](#troubleshooting)
   - [`npm start` doesn’t detect changes](#npm-start-doesnt-detect-changes)
-  - [`npm test` hangs on macOS Sierra](#npm-test-hangs-on-macos-sierra)
+  - [`npm test` hangs or crashes on macOS Sierra](#npm-test-hangs-or-crashes-on-macos-sierra)
   - [`npm run build` exits too early](#npm-run-build-exits-too-early)
   - [`npm run build` fails on Heroku](#npm-run-build-fails-on-heroku)
   - [`npm run build` fails to minify](#npm-run-build-fails-to-minify)
@@ -621,7 +621,7 @@ Then in `package.json`, add the following lines to `scripts`:
 ```diff
    "scripts": {
 +    "build-css": "node-sass-chokidar src/ -o src/",
-+    "watch-css": "npm run build-css && node-sass-chokidar src/ -o src/ --watch --recursive",
++    "watch-css": "node-sass-chokidar src/ -o src/ --watch",
      "start": "react-scripts start",
      "build": "react-scripts build",
      "test": "react-scripts test --env=jsdom",
@@ -636,8 +636,8 @@ To share variables between Sass files, you can use Sass imports. For example, `s
 To enable importing files without using relative paths, you can add the  `--include-path` option to the command in `package.json`.
 
 ```
-"build-css": "node-sass-chokidar --include-path ./src --include-path ./node_modules src/ -o src/",
-"watch-css": "npm run build-css && node-sass-chokidar --include-path ./src --include-path ./node_modules src/ -o src/ --watch --recursive",
+"build-css": "node-sass-chokidar --include-path ./node_modules src/ -o src/",
+"watch-css": "node-sass-chokidar --include-path ./node_modules src/ -o src/ --watch",
 ```
 
 This will allow you to do imports like
@@ -2048,6 +2048,14 @@ will affect your users' experience.
 
 ## Analyzing the Bundle Size
 
+When your app grows in size, it's easy for bundles to become bloated. The first step to solving large bundles is understanding what's in them!
+
+There are many different tools available to analyze bundles, but they typically rely on either **sourcemaps** or **webpack-specific JSON stats**.
+
+### Using Sourcemaps
+
+When building for production, sourcemaps are automatically created adjacent to the JS files in `build/static/js`.
+
 [Source map explorer](https://www.npmjs.com/package/source-map-explorer) analyzes
 JavaScript bundles using the source maps. This helps you understand where code
 bloat is coming from.
@@ -2081,6 +2089,45 @@ script.
 npm run build
 npm run analyze
 ```
+
+### Using Webpack Stats JSON
+
+> Note: this feature is available with react-scripts@2.0 and higher.
+
+Webpack can produce a JSON manifest that details the bundles, and several tools can use that file to do analysis.
+
+Unlike with sourcemaps, the JSON file isn't created automatically on build. You must pass a `--stats` flag:
+
+```sh
+npm run build -- --stats
+```
+
+Once the build is complete, you should have a JSON file located at `build/bundle-stats.json`.
+
+The quickest way to get insight into your bundle is to drag and drop that JSON file into [Webpack Visualizer](https://chrisbateman.github.io/webpack-visualizer/).
+
+Another very popular tool is [`webpack-bundle-analyzer`](https://github.com/webpack-contrib/webpack-bundle-analyzer).
+
+To use `webpack-bundle-analyzer`, start by installing it from NPM:
+
+```sh
+npm install --save webpack-bundle-analyzer
+# or, with Yarn:
+yarn add webpack-bundle-analyzer
+```
+
+
+In `package.json`, add the following line to `scripts`:
+
+```diff
+   "scripts": {
++    "analyze": "npm run build -- --stats && webpack-bundle-analyzer build/bundle-stats.json",
+     "start": "react-scripts start",
+     "build": "react-scripts build",
+     "test": "react-scripts test --env=jsdom",
+```
+
+When you run `npm run analyze`, a new build will be created, and a browser tab should open automatically, displaying the sizes of the modules within your bundle.
 
 ## Deployment
 
@@ -2565,7 +2612,7 @@ If this doesn’t happen, try one of the following workarounds:
 
 If none of these solutions help please leave a comment [in this thread](https://github.com/facebook/create-react-app/issues/659).
 
-### `npm test` hangs on macOS Sierra
+### `npm test` hangs or crashes on macOS Sierra
 
 If you run `npm test` and the console gets stuck after printing `react-scripts test --env=jsdom` to the console there might be a problem with your [Watchman](https://facebook.github.io/watchman/) installation as described in [facebook/create-react-app#713](https://github.com/facebook/create-react-app/issues/713).
 

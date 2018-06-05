@@ -86,7 +86,7 @@ yarn
 
 # Start local registry
 tmp_registry_log=`mktemp`
-nohup npx verdaccio@2.7.2 &>$tmp_registry_log &
+nohup npx verdaccio@2.7.2 -c tasks/verdaccio.yaml &>$tmp_registry_log &
 # Wait for `verdaccio` to boot
 grep -q 'http address' <(tail -f $tmp_registry_log)
 
@@ -100,6 +100,18 @@ npx npm-cli-login@0.0.10 -u user -p password -e user@example.com -r "$custom_reg
 # Publish the monorepo
 git clean -df
 ./tasks/publish.sh --yes --force-publish=* --skip-git --cd-version=prerelease --exact --npm-tag=latest
+
+# ******************************************************************************
+# Test --scripts-version with a distribution tag
+# ******************************************************************************
+
+cd "$temp_app_path"
+npx create-react-app --scripts-version=@latest test-app-dist-tag
+cd test-app-dist-tag
+
+# Check corresponding scripts version is installed.
+exists node_modules/react-scripts
+checkDependencies
 
 # ******************************************************************************
 # Test --scripts-version with a version number
